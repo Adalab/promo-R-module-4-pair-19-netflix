@@ -1,6 +1,16 @@
 const express = require('express');
 const cors = require('cors');
-const movies = require('./data/movies.json');
+// const movies = require('./data/movies.json');
+
+// importar la librería de la base de datos
+const Database = require('better-sqlite3');
+
+// importamos la base de datos 
+const db = new Database('./src/db/database.db', {
+  // con verbose le decimos que muestre en la consola todas las queries que se ejecuten
+  verbose: console.log,
+  // así podemos comprobar qué queries estamos haciendo en todo momento
+});
 
 // create and config server
 const server = express();
@@ -15,6 +25,11 @@ server.listen(serverPort, () => {
   console.log(`Server listening at http://localhost:${serverPort}`);
 });
 server.get('/movies', (req, res) => {
+  // preparamos la query
+const query = db.prepare('SELECT * FROM movies');
+// ejecutamos la query
+const movies = query.all();
+//pintabamos las peliculas del fichero movies.json
   const data = {
     success: true,
     movies: movies,
