@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const users = require('./data/users.json');
-// const movies = require('./data/movies.json');
+const movies = require('./data/movies.json'); // descomento porque el movieID no lo tenemos hecho con base de datos, y no funciona el get movieID
 
 // importar la librería de la base de datos
 const Database = require('better-sqlite3');
@@ -27,7 +27,6 @@ server.listen(serverPort, () => {
 });
 
 server.get('/movies', (req, res) => {
-  console.log(req);
   const filterGender = req.query.gender;
   // preparamos la query
   const query = db.prepare('SELECT * FROM movies');
@@ -51,7 +50,7 @@ server.post('/login', (req, res) => {
   if (userFound) {
     res.json({
       success: true,
-      userId: 'id_de_la_usuaria_encontrada',
+      userId: userFound.id,
     });
   } else {
     res.json({
@@ -62,7 +61,7 @@ server.post('/login', (req, res) => {
 });
 
 //servidor dinámico
-server.get('/movie/:movieId', (req, res) => {
+server.get('/movies/:movieId', (req, res) => {
   const foundMovie = movies.find((movie) => movie.id === req.params.movieId);
   console.log(foundMovie);
   res.render('movie', foundMovie); //renderizamos la plantilla del html que hemos creado en la carpeta views dónde movies es el nombre del archivo y foundMovie es un objeto con los datos de la película

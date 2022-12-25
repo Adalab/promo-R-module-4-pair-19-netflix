@@ -1,19 +1,19 @@
 [
   {
     "id": "1",
-    "title": "Gambita de dama",
+    "name": "Gambita de dama",
     "gender": "Drama",
     "image": "//localhost:4000/gambita-de-dama.jpg "
   },
   {
     "id": "2",
-    "title": "Friends",
+    "name": "Friends",
     "gender": "Comedia",
     "image": "//localhost:4000/friends.jpg"
   },
   {
     "id": "3",
-    "title": "los simpsons",
+    "name": "los simpsons",
     "gender": "Comedia",
     "image": "https://via.placeholder.com/150"
   }
