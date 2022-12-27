@@ -42,7 +42,6 @@ server.get('/movies', (req, res) => {
 });
 
 server.post('/login', (req, res) => {
- 
   const userFound = users.find(
     (user) =>
       user.email === req.body.email && user.password === req.body.password
@@ -59,7 +58,15 @@ server.post('/login', (req, res) => {
     });
   }
 });
-
+server.post('/sign-up', (req, res) => {
+  const { email, password } = req.body; // haciendo destructuring de los parámetros que nos devuelve la peticion fetch del sing-up , estamos recogiendo éstos para ahora poder usarlos en la query
+  const query = db.prepare('INSERT INTO users (email, password) VALUES (?, ?)'); //añidimos y guardamos un nuevo registro a la tabla users con Insert Into en la base de datos
+  const result = query.run(email, password); //ejecutamos la query de la base de datos
+  res.json({
+    success: true,
+    userId: result.lastInsertRowid, // nos quedamos con el id del último registro que hemos añadido a la BD
+  });
+});
 //servidor dinámico
 server.get('/movies/:movieId', (req, res) => {
   const foundMovie = movies.find((movie) => movie.id === req.params.movieId);
