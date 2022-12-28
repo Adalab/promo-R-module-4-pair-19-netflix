@@ -42,7 +42,7 @@ server.get('/movies', (req, res) => {  //para pintar y filtrar todas las pelicul
   res.json(data);
 });
 
-server.post('/login', (req, res) => {  // petición post para hacer login.
+server.post('/login', (req, res) => {  // petición post para hacer login. (lo tenemos con el fichero user.json, se saca del servidor estatico. no lo llegamos a hacer con la BD)
   const userFound = users.find(  //buscamos la usuaria que hay dentro del archivo users.json aquella que tenga
     (user) =>  // el mismo email y password que la que recibimos por queryparams. 
       user.email === req.body.email && user.password === req.body.password
@@ -74,6 +74,33 @@ server.get('/movies/:movieId', (req, res) => { // endpoint que busca entre todas
   console.log(foundMovie);// constante donde guardamos la busqueda de la pelicula .
   res.render('movie', foundMovie); //renderizamos la plantilla del html que hemos creado en la carpeta views dónde movie es el nombre del archivo de la carpeta views y foundMovie es un objeto con los datos de la película
 });
+
+server.get('/user/movies', (req, res) => {  
+  const userId = req.header('user-id'); // recogemos el id que nos pasan por el hearders del fetch 
+  const movieIdsQuery = db.prepare( 
+    'SELECT movieId FROM rel_movies_users WHERE userId = ?'
+  );
+  const movieIds = movieIdsQuery.all(userId); //  ejecutamos la query
+  console.log (movieIds);
+
+  db.prepare('SELECT * FROM movies WHERE id IN (?, ?)');
+  const moviesIdsQuestions = movieIds.map((id) => '?').join(', '); // que nos devuelve '?, ?'
+  // preparamos la segunda query para obtener todos los datos de las películas
+  const moviesQuery = db.prepare(
+    `SELECT * FROM movies WHERE id IN (${moviesIdsQuestions})`
+  );
+
+  // convertimos el array de objetos de id anterior a un array de números
+  const moviesIdsNumbers = movieIds.map((movie) => movie.movieId); // que nos devuelve [1.0, 2.0]
+  // ejecutamos segunda la query
+  const movies = moviesQuery.all(moviesIdsNumbers);
+
+  res.json({
+    "success": true,
+    "movies": movies
+  });
+});
+
 
 const staticServerPathWeb = './src/public-react'; // Aquí hemos creado la carpeta public-react (estático)
 //esto funciona como el gitHub pages, contiene la última versión hasta que tu actualices con un npm run publish-react
