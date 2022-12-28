@@ -6,7 +6,7 @@ const sendLoginToApi = (data) => {
     email: data.email,
     password: data.password,
   };
-  return fetch('http://localhost:4000/login', {
+  return fetch('http://localhost:4000/login`', {
     method: 'POST',
     body: JSON.stringify(bodyParams), //conviertes el objeto en string. siempre se pasa en texto plano. 
     headers: {

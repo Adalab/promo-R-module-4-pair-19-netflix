@@ -1,8 +1,8 @@
 //importamos los dos módulos de NPM necesarios para trabajar
-const express = require('express');  // esta librería sirve para montar el servidor.
-const cors = require('cors'); // esta librería sirve para hacer llamadas entre dominios diferentes.
-const users = require('./data/users.json');// este es el fichero json que contiene los datos del API usuarios
-const movies = require('./data/movies.json'); // este es el fichero json que contiene los datos del API películas
+const express = require('express');  
+const cors = require('cors'); 
+const users = require('./data/users.json');
+const movies = require('./data/movies.json'); 
 
 // importar la librería de la base de datos
 const Database = require('better-sqlite3');
@@ -16,8 +16,8 @@ const db = new Database('./src/db/database.db', {
 
 // CReamos el servidor.  Sólo está configurado y guardado en la variable server para poder usarlo luego y exponer la API.
 const server = express();
-server.use(cors()); // config.del servidor. cuando el front está en un dominio distinto al del servidor.
-server.use(express.json()); // configuraciones. permite convertir a json los parámetros que yo le pase(body etc).
+server.use(cors()); 
+server.use(express.json()); vg
 
 server.set('view engine', 'ejs'); // configuración del motor de plantillas
 
@@ -28,11 +28,11 @@ server.listen(serverPort, () => { // la funcion recibe dos parametros. el primer
 });
 
 server.get('/movies', (req, res) => {  //para pintar y filtrar todas las peliculas
-  // const filterGender = req.query.gender;
+  
   // preparamos la query
   const query = db.prepare('SELECT * FROM movies'); // le decimos que pinte las pelis que hay en esta tabla de la BD.
   // ejecutamos la query
-  const movies = query.all(); // le pedimos que nos de TODAS las peliculas de la tabla movies. el query.all devuelve un [] que contiene los objetos que coinciden con la búsqueda.
+  const movies = query.all(); // 
 
   //pintabamos las peliculas del fichero movies.json
   const data = {
@@ -43,8 +43,8 @@ server.get('/movies', (req, res) => {  //para pintar y filtrar todas las pelicul
 });
 
 server.post('/login', (req, res) => {  // petición post para hacer login. (lo tenemos con el fichero user.json, se saca del servidor estatico. no lo llegamos a hacer con la BD)
-  const userFound = users.find(  //buscamos la usuaria que hay dentro del archivo users.json aquella que tenga
-    (user) =>  // el mismo email y password que la que recibimos por queryparams. 
+  const userFound = users.find(  
+    (user) =>  
       user.email === req.body.email && user.password === req.body.password
   );
   if (userFound) {  // si encuentra la usuaria devuelve un true y el id de la usuaria.
@@ -60,7 +60,7 @@ server.post('/login', (req, res) => {  // petición post para hacer login. (lo t
   }
 });
 server.post('/sign-up', (req, res) => {
-  const { email, password } = req.body; // haciendo destructuring de los parámetros que nos devuelve la peticion fetch del sing-up , estamos recogiendo éstos para ahora poder usarlos en la query
+  const { email, password } = req.body; 
   const query = db.prepare('INSERT INTO users (email, password) VALUES (?, ?)'); //añidimos y guardamos un nuevo registro a la tabla users con Insert Into en la base de datos
   const result = query.run(email, password); //ejecutamos la query de la base de datos
   res.json({  // responde devolviendo estos datos: 
@@ -71,8 +71,8 @@ server.post('/sign-up', (req, res) => {
 //servidor dinámico
 server.get('/movies/:movieId', (req, res) => { // endpoint que busca entre todas las pelis la que tenga el id que yo le diga
   const foundMovie = movies.find((movie) => movie.id === req.params.movieId); //buscamos dentro del fichero movies.json
-  console.log(foundMovie);// constante donde guardamos la busqueda de la pelicula .
-  res.render('movie', foundMovie); //renderizamos la plantilla del html que hemos creado en la carpeta views dónde movie es el nombre del archivo de la carpeta views y foundMovie es un objeto con los datos de la película
+  console.log(foundMovie);
+  res.render('movie', foundMovie); 
 });
 
 server.get('/user/movies', (req, res) => {  
@@ -84,14 +84,14 @@ server.get('/user/movies', (req, res) => {
   console.log (movieIds);
 
   db.prepare('SELECT * FROM movies WHERE id IN (?, ?)');
-  const moviesIdsQuestions = movieIds.map((id) => '?').join(', '); // que nos devuelve '?, ?'
+  const moviesIdsQuestions = movieIds.map((id) => '?').join(', '); 
   // preparamos la segunda query para obtener todos los datos de las películas
   const moviesQuery = db.prepare(
     `SELECT * FROM movies WHERE id IN (${moviesIdsQuestions})`
   );
 
   // convertimos el array de objetos de id anterior a un array de números
-  const moviesIdsNumbers = movieIds.map((movie) => movie.movieId); // que nos devuelve [1.0, 2.0]
+  const moviesIdsNumbers = movieIds.map((movie) => movie.movieId); 
   // ejecutamos segunda la query
   const movies = moviesQuery.all(moviesIdsNumbers);
 
@@ -103,11 +103,11 @@ server.get('/user/movies', (req, res) => {
 
 
 const staticServerPathWeb = './src/public-react'; // Aquí hemos creado la carpeta public-react (estático)
-//esto funciona como el gitHub pages, contiene la última versión hasta que tu actualices con un npm run publish-react
+
 server.use(express.static(staticServerPathWeb));
 
-const staticImages = './src/public-movies-images'; //Creamos servidor de estáticos de las imágenes. 
-server.use(express.static(staticImages)); // cuidado con la ruta de esta carpeta para que se visualice bien.
+const staticImages = './src/public-movies-images'; 
+server.use(express.static(staticImages)); 
 
-const staticCss = './src/public-movies-css'; //servidor de estáticos del css
+const staticCss = './src/public-movies-css'; 
 server.use(express.static(staticCss));
