@@ -17,7 +17,7 @@ const db = new Database('./src/db/database.db', {
 // CReamos el servidor.  Sólo está configurado y guardado en la variable server para poder usarlo luego y exponer la API.
 const server = express();
 server.use(cors()); 
-server.use(express.json()); vg
+server.use(express.json()); 
 
 server.set('view engine', 'ejs'); // configuración del motor de plantillas
 
@@ -37,7 +37,7 @@ server.get('/movies', (req, res) => {  //para pintar y filtrar todas las pelicul
   //pintabamos las peliculas del fichero movies.json
   const data = {
     success: true,
-    movies: movies, // movies es el [] que te devuleve la BD
+    movies: movies, 
   };
   res.json(data);
 });
@@ -47,13 +47,13 @@ server.post('/login', (req, res) => {  // petición post para hacer login. (lo t
     (user) =>  
       user.email === req.body.email && user.password === req.body.password
   );
-  if (userFound) {  // si encuentra la usuaria devuelve un true y el id de la usuaria.
+  if (userFound) {  
     res.json({
       success: true,
       userId: userFound.id,
     });
   } else {
-    res.json({  //si no encuentra el usuario, devuelve un false y usuario no encontrado.
+    res.json({  
       success: false,
       errorMessage: 'Usuaria/o no encontrada/o',
     });
@@ -61,11 +61,11 @@ server.post('/login', (req, res) => {  // petición post para hacer login. (lo t
 });
 server.post('/sign-up', (req, res) => {
   const { email, password } = req.body; 
-  const query = db.prepare('INSERT INTO users (email, password) VALUES (?, ?)'); //añidimos y guardamos un nuevo registro a la tabla users con Insert Into en la base de datos
+  const query = db.prepare('INSERT INTO users (email, password) VALUES (?, ?)'); //añidimos y guardamos un nuevo registro a la tabla users 
   const result = query.run(email, password); //ejecutamos la query de la base de datos
-  res.json({  // responde devolviendo estos datos: 
+  res.json({  
     success: true,
-    userId: result.lastInsertRowid, // nos quedamos con el id del último registro que hemos añadido a la BD
+    userId: result.lastInsertRowid, 
   });
 });
 //servidor dinámico
